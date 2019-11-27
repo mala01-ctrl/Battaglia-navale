@@ -67,6 +67,23 @@ public class Player implements Runnable{
     @Override
     public void run() {
         System.out.println("Connesso: " + socket);
+        setUsernamePlayer();
+    }
+    
+    /**
+     * Metodo setter che assegna uno username al giocatore 
+     * @param nomeGiocatore username da assegnare al giocatore
+     */
+    private void setNomeGiocatore(String nomeGiocatore) {
+        this.nomeGiocatore = nomeGiocatore;
+    }
+    
+    /**
+     * Metodo che richiede al client un nome giocatore e che successivamente
+     * tramite il metodo setNomeGiocatore(String nomegiocatore) assegnerà alla 
+     * variabile.
+     */
+    private void setUsernamePlayer() {
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new Scanner(socket.getInputStream());
@@ -77,10 +94,5 @@ public class Player implements Runnable{
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void setNomeGiocatore(String nomeGiocatore) {
-        this.nomeGiocatore = nomeGiocatore;
-    }
-    
     
 }
