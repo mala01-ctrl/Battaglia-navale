@@ -13,16 +13,16 @@ import java.util.Scanner;
  *
  * @author informatica
  */
-public class Player {
+public class Player implements Runnable{
     private Socket socket;
     private String nomeGiocatore;
     private Scanner input;
     private PrintWriter output;
     private int[][] matrice;
     
-    public Player(/*Socket socket,*/ String nomeGiocatore)
+    public Player(Socket socket, String nomeGiocatore)
     {
-        /*this.socket = socket;*/
+        this.socket = socket;
         this.nomeGiocatore = nomeGiocatore;
         this.matrice = new int[21][21];
     }
@@ -34,5 +34,10 @@ public class Player {
             }
             System.out.println("");
         }
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Hello");
     }
 }

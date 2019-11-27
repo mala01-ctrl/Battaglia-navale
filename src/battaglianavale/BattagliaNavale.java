@@ -6,7 +6,10 @@
 package battaglianavale;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -19,8 +22,15 @@ public class BattagliaNavale {
      */
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        Player p = new Player(/*new Socket("127.0.0.1", 55555),*/ "User");
-        p.stampaMatrice();
+        try (ServerSocket listener = new ServerSocket(55555))
+        {
+            System.out.println("Server battaglia navale pronto...");
+            ExecutorService pool = Executors.newFixedThreadPool(200);
+            while (true)
+            {
+                pool.execute(new Player(listener.accept(), "Lorenzo"));
+            }
+        }
     }
     
 }
