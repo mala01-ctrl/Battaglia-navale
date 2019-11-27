@@ -28,7 +28,8 @@ public class BattagliaNavale {
             ExecutorService pool = Executors.newFixedThreadPool(200);
             while (true)
             {
-                pool.execute(new Player(listener.accept(), "Lorenzo"));
+                pool.execute(new Player(listener.accept()));
+                pool.execute(new Player(listener.accept()));
             }
         }
     }

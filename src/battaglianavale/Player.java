@@ -39,16 +39,19 @@ public class Player implements Runnable{
      * Matrice di interi che rappresenta la matrice della battaglia navale
      */
     private int[][] matrice;
+    /**
+     * Oggetto di tipo Player che rappresenta l'avversario
+     */
+    private Player opponent;
     
     /**
      * Costruttore della classe player 
      * @param socket socket per instaurare la connessione con il client
-     * @param nomeGiocatore nome del giocatore
      */
-    public Player(Socket socket, String nomeGiocatore)
+    public Player(Socket socket)
     {
         this.socket = socket;
-        this.nomeGiocatore = nomeGiocatore;
+        this.nomeGiocatore = "";
         this.matrice = new int[21][21];
     }
     
@@ -66,9 +69,18 @@ public class Player implements Runnable{
         System.out.println("Connesso: " + socket);
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
-            output.println(new Date().toString());
+            input = new Scanner(socket.getInputStream());
+            output.println("Inserire nome giocatore: ");
+            setNomeGiocatore(input.nextLine());
+            System.out.println(nomeGiocatore);
         } catch (IOException ex) {
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public void setNomeGiocatore(String nomeGiocatore) {
+        this.nomeGiocatore = nomeGiocatore;
+    }
+    
+    
 }
