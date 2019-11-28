@@ -10,4 +10,13 @@ package battaglianavale;
  * @author informatica
  */
 public class Game { 
+    private Player currentPlayer;
+    
+    public synchronized void move(Player player)
+    {
+        if (player != currentPlayer)
+            throw new IllegalStateException("Non è il tuo turno");
+        if (player.getOpponent() == null)
+            throw new IllegalStateException("Non hai ancora un'avversario");
+    }
 }

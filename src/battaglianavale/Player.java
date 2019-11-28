@@ -94,5 +94,11 @@ public class Player implements Runnable{
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public Player getOpponent() {
+        return opponent;
+    }
+    
+    
     
 }
