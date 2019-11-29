@@ -8,7 +8,6 @@ package battaglianavale;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,20 +38,31 @@ public class Player implements Runnable{
      * Matrice di interi che rappresenta la matrice della battaglia navale
      */
     private int[][] matrice;
+    
     /**
-     * Oggetto di tipo Player che rappresenta l'avversario
+     * Numero che contraddistingue i due giocatori
      */
-    private Player opponent;
+    private int numero;
+    
+    /**
+     * Variabile statica della classe Game utilizzata per ogni istanza 
+     * della classe Player
+     */
+    private static Game game = new Game();
     
     /**
      * Costruttore della classe player 
      * @param socket socket per instaurare la connessione con il client
+     * @param numero numero che contraddistingue il giocatore
      */
-    public Player(Socket socket)
+    public Player(Socket socket, int numero) throws IOException
     {
         this.socket = socket;
         this.nomeGiocatore = "";
         this.matrice = new int[21][21];
+        this.numero = numero;
+        this.output = new PrintWriter(socket.getOutputStream(), true);
+        this.input = new Scanner(socket.getInputStream());
     }
     
     public void stampaMatrice() {
@@ -62,12 +72,6 @@ public class Player implements Runnable{
             }
             System.out.println("");
         }
-    }
-
-    @Override
-    public void run() {
-        System.out.println("Connesso: " + socket);
-        setUsernamePlayer();
     }
     
     /**
@@ -81,24 +85,33 @@ public class Player implements Runnable{
     /**
      * Metodo che richiede al client un nome giocatore e che successivamente
      * tramite il metodo setNomeGiocatore(String nomegiocatore) assegnerà alla 
-     * variabile.
+     * variabile. Utilizza inoltre i metodi della classe Game per impostare 
+     * il giocatore corrente e l'avversario.
      */
-    private void setUsernamePlayer() {
-        try {
-            output = new PrintWriter(socket.getOutputStream(), true);
-            input = new Scanner(socket.getInputStream());
-            output.println("Inserire nome giocatore: ");
-            setNomeGiocatore(input.nextLine());
-            System.out.println(nomeGiocatore);
-        } catch (IOException ex) {
-            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+    public void setUsernamePlayer() {
+        output.println("Inserire nome giocatore: ");
+        setNomeGiocatore(input.nextLine());
+        output.println(nomeGiocatore);
+        if (this.numero == 1) {
+            game.setCurrentPlayer(this);
+            output.println("attendere connessione altro giocatore");
+        } else {
+            game.setOpponent(this);
+            game.getCurrentPlayer().output.println("Pronto");
         }
     }
 
-    public Player getOpponent() {
-        return opponent;
+    @Override
+    public void run() {
+        setUsernamePlayer();
+        getPosizioneNavi();
     }
     
-    
+    public synchronized void getPosizioneNavi()
+    {
+        output.println("Inserisci le coordinate della prima nave");
+        String x = input.nextLine();
+        System.out.println(x);
+    }
     
 }
