@@ -5,6 +5,7 @@
  */
 package battaglianavale;
 
+
 /**
  *
  * @author lorenzo
@@ -32,5 +33,11 @@ public class Game {
         return opponent;
     }
     
+    public synchronized boolean CheckConnection()
+    {
+        if (opponent == null)
+            return false;
+        return true;
+    }
     
 }

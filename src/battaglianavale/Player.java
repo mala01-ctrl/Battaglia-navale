@@ -59,18 +59,22 @@ public class Player implements Runnable{
     {
         this.socket = socket;
         this.nomeGiocatore = "";
-        this.matrice = new int[21][21];
+        this.matrice = new int[10][10];
         this.numero = numero;
         this.output = new PrintWriter(socket.getOutputStream(), true);
         this.input = new Scanner(socket.getInputStream());
     }
     
+    /**
+     * Metodo che stampa la griglia delle navi 
+     */
     public void stampaMatrice() {
-        for (int i = 0; i < 21; i++) {
-            for (int j = 0; j < 21; j++) {
-                System.out.print(matrice[i][j] + " ");
+        output.println("Visualizzazione griglia Battaglia navale");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                output.print(matrice[i][j] + " ");
             }
-            System.out.println("");
+            output.println("");
         }
     }
     
@@ -97,21 +101,46 @@ public class Player implements Runnable{
             output.println("attendere connessione altro giocatore");
         } else {
             game.setOpponent(this);
+            game.getOpponent().output.println("Pronto");
             game.getCurrentPlayer().output.println("Pronto");
         }
     }
-
+    
+    /**
+     * I Thread eseguono questo metodo 
+     */
     @Override
     public void run() {
         setUsernamePlayer();
-        getPosizioneNavi();
+        stampaMatrice();
+        CheckPlayers();
+        GetCoordinate();
     }
     
-    public synchronized void getPosizioneNavi()
+    /**
+     * Metodo che controlla che entrambi i giocatori siano connessi
+     */
+    public void CheckPlayers()
     {
-        output.println("Inserisci le coordinate della prima nave");
-        String x = input.nextLine();
-        System.out.println(x);
+        while (true)
+        {
+            if (game.CheckConnection()) {
+                Player p = game.getCurrentPlayer();
+                game.setCurrentPlayer(game.getOpponent());
+                game.setOpponent(p);
+                return;
+            }
+        }
     }
-    
+    /**
+     * Metodo per l'inserimento delle coordinate
+     */
+    public void GetCoordinate() {
+        int i;
+        int j;
+        output.println("Inserire la colonna della prima nave");
+        String response = input.nextLine();
+        i = Integer.parseInt(response);
+        output.println("Inserire la posizione verticale della nave");
+    }
 }
