@@ -20,12 +20,12 @@ public class BattagliaNavale {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, Exception {
         // TODO code application logic here
         try (ServerSocket listener = new ServerSocket(55555))
         {
             System.out.println("Server battaglia navale pronto...");
-            ExecutorService pool = Executors.newFixedThreadPool(2);
+            ExecutorService pool = Executors.newFixedThreadPool(200);
             while (true)
             {
                 Game game = new Game();
