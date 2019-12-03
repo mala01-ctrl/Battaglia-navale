@@ -8,6 +8,7 @@ package battaglianavale;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,18 +93,17 @@ public class Player implements Runnable{
      * variabile. Utilizza inoltre i metodi della classe Game per impostare 
      * il giocatore corrente e l'avversario.
      */
-    public void setUsernamePlayer() {
+    public synchronized void setUsernamePlayer() {
         output.println("Inserire nome giocatore: ");
         setNomeGiocatore(input.nextLine());
         output.println(nomeGiocatore);
-        if (this.numero == 1) {
+        if (game.getCurrentPlayer() == null)
+        {
             game.setCurrentPlayer(this);
-            output.println("attendere connessione altro giocatore");
-        } else {
-            game.setOpponent(this);
-            game.getOpponent().output.println("Pronto");
-            game.getCurrentPlayer().output.println("Pronto");
+            game.getCurrentPlayer().output.println("Attendi");
         }
+        else
+            game.setOpponent(this);
     }
     
     /**
@@ -111,10 +111,17 @@ public class Player implements Runnable{
      */
     @Override
     public void run() {
-        setUsernamePlayer();
-        stampaMatrice();
-        CheckPlayers();
-        GetCoordinate();
+        try
+        {
+            setUsernamePlayer();
+            stampaMatrice();
+            CheckPlayers();
+            GetCoordinate();
+        }catch(NoSuchElementException e)
+        {
+            System.out.println("Errore");
+            this.output.println("OTHER PLAYER LEFT");
+        }
     }
     
     /**
@@ -125,9 +132,6 @@ public class Player implements Runnable{
         while (true)
         {
             if (game.CheckConnection()) {
-                Player p = game.getCurrentPlayer();
-                game.setCurrentPlayer(game.getOpponent());
-                game.setOpponent(p);
                 return;
             }
         }
