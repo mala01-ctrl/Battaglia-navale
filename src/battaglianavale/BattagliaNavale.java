@@ -25,11 +25,12 @@ public class BattagliaNavale {
         try (ServerSocket listener = new ServerSocket(55555))
         {
             System.out.println("Server battaglia navale pronto...");
-            ExecutorService pool = Executors.newFixedThreadPool(200);
+            ExecutorService pool = Executors.newFixedThreadPool(2);
             while (true)
             {
-                pool.execute(new Player(listener.accept(), 1));
-                pool.execute(new Player(listener.accept(), 2));
+                Game game = new Game();
+                pool.execute(game.new Player(listener.accept(), 1));
+                pool.execute(game.new Player(listener.accept(), 2));
             }
         }
     }
