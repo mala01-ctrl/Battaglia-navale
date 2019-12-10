@@ -22,34 +22,15 @@ public class Game {
      */
     private Player currentPlayer;
     
-    private ArrayList <Nave> navi;
+    private String[] nomi = {"cacciatorpediniere", "sottomarino", 
+        "corazzata", "portaerei"};
+    
+    private int[] valori = {2, 3, 4, 5}; 
     /**
      * Costruttore vuoto della classe Game
      */
     public Game() throws Exception {
-        this.navi = new ArrayList<>();
-        setCacciatorpediniere();
-        setSottomarini();
-        this.navi.add(new Nave("Corazzata", 4));
-        this.navi.add(new Nave("Portaerei", 5));
     }
-    
-    private void setCacciatorpediniere() throws Exception
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            this.navi.add(new Nave("Cacciatorpediniere", 2));
-        }
-    }
-    
-    private void setSottomarini() throws Exception
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            this.navi.add(new Nave("Sottomarino", 3));
-        }
-    }
-    
     
     public class Player implements Runnable
     {
@@ -79,6 +60,10 @@ public class Game {
         private int id;
         
         private Cella[][] griglia;
+
+        private ArrayList<Nave> navi;
+
+        private ArrayList<Nave> naviDaPosizionare;
         
         /**
          * Costruttore della inner class Player con i parametri
@@ -86,19 +71,28 @@ public class Game {
          * @param id id del giocatore
          * @throws IOException 
          */
-        public Player(Socket socket, int id) throws IOException
+        public Player(Socket socket, int id) throws IOException, Exception
         {
             this.socket = socket;
             this.id = id;
             this.input = new Scanner(this.socket.getInputStream());
             this.output = new PrintWriter(this.socket.getOutputStream(), true);
             griglia = new Cella[21][21];
+            this.navi = new ArrayList<>();
+            this.naviDaPosizionare = new ArrayList<>();
+            for (int i = 0; i < 4; i++)
+            {
+                this.navi.add(new Nave(Game.this.nomi[i], Game.this.valori[i]));
+                this.naviDaPosizionare.add(this.navi.get(i));
+            }
         }
         
         @Override
         public void run() {
             setNomeGiocatore();
+            posizionaNave();
             setup();
+            
         }
         
         /**
@@ -132,10 +126,11 @@ public class Game {
         public void posizionaNave()
         {
             this.output.println("Posiziona le navi");
-            this.output.println("Posizionare navi in verticale?");
-            if (this.input.nextLine().equals("SI"))
+            this.output.println("Posizionare navi in verticale?S/N");
+            String risposta = this.input.nextLine();
+            if (risposta.equals("S"))
             {
-                this.output.println("Digitare posizione verticale");
+                this.output.println("Digitare numero righe");
                 String response = this.input.nextLine();
                 int x = Integer.parseInt(response);
             }
