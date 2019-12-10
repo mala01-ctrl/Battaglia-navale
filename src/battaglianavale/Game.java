@@ -34,16 +34,7 @@ public class Game {
      * Costruttore vuoto della classe Game
      */
     public Game() throws Exception {
-        this.navi = new ArrayList<>();
-        this.naviDaPosizionare = new ArrayList<>();
-        for (int i = 0; i < 4; i++)
-        {
-            this.navi.add(new Nave((nomi[i]), lunghezze[i]));
-            this.naviDaPosizionare.add(new Nave((nomi[i]), lunghezze[i]));
-        }
     }
-    
-    
     
     public class Player implements Runnable
     {
@@ -73,6 +64,10 @@ public class Game {
         private int id;
         
         private Cella[][] griglia;
+
+        private ArrayList<Nave> navi;
+
+        private ArrayList<Nave> naviDaPosizionare;
         
         /**
          * Costruttore della inner class Player con i parametri
@@ -80,25 +75,27 @@ public class Game {
          * @param id id del giocatore
          * @throws IOException 
          */
-        public Player(Socket socket, int id) throws IOException
+        public Player(Socket socket, int id) throws IOException, Exception
         {
             this.socket = socket;
             this.id = id;
             this.input = new Scanner(this.socket.getInputStream());
             this.output = new PrintWriter(this.socket.getOutputStream(), true);
             griglia = new Cella[21][21];
+            this.navi = new ArrayList<>();
+            this.naviDaPosizionare = new ArrayList<>();
+            for (int i = 0; i < 4; i++)
+            {
+                this.navi.add(new Nave(Game.this.nomi[i], Game.this.lunghezze[i]));
+                this.naviDaPosizionare.add(this.navi.get(i));
+            }
         }
         
         @Override
         public void run() {
-            try
-            {
-                setNomeGiocatore();
-                posizionaNave();
-                setup();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } 
+            setNomeGiocatore();
+            posizionaNave();
+            setup();
         }
         
         /**
@@ -129,22 +126,25 @@ public class Game {
             }
         }
         
-        public void posizionaNave()
-        {
+        public void posizionaNave() {
             this.output.println("Posiziona le navi");
-            int i = 0;
+            this.output.println("Posizionare la nave in verticale?");
+            /*int i = 0;
             while (Game.this.naviDaPosizionare.isEmpty())
             {
                 this.output.println("Posiziona " + Game.this.naviDaPosizionare.get(i).getNome());
                 this.output.println("Posizionare la nave in verticale?");
+            }*/
+            if (this.input.nextLine().equals("SI")) {
+                this.output.println("Posizionare navi in verticale?S/N");
             }
-            /*if (this.input.nextLine().equals("SI"))
-            {
-                this.output.println("Digitare posizione verticale");
+            String risposta = this.input.nextLine();
+            if (risposta.equals("S")) {
+                this.output.println("Digitare numero righe");
                 String response = this.input.nextLine();
                 int x = Integer.parseInt(response);
                 System.out.println(x);
-            }*/
+            }
         }
         
         
