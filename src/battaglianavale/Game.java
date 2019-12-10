@@ -23,32 +23,26 @@ public class Game {
     private Player currentPlayer;
     
     private ArrayList <Nave> navi;
+    
+    private ArrayList <Nave> naviDaPosizionare;
+    
+    private int[] lunghezze = { 2, 3, 4, 5 };
+    
+    private String[] nomi = { "cacciatorpediniere", "sottomarino", 
+        "corazzate", "portaerei" };
     /**
      * Costruttore vuoto della classe Game
      */
     public Game() throws Exception {
         this.navi = new ArrayList<>();
-        setCacciatorpediniere();
-        setSottomarini();
-        this.navi.add(new Nave("Corazzata", 4));
-        this.navi.add(new Nave("Portaerei", 5));
-    }
-    
-    private void setCacciatorpediniere() throws Exception
-    {
-        for (int i = 0; i < 3; i++)
+        this.naviDaPosizionare = new ArrayList<>();
+        for (int i = 0; i < 4; i++)
         {
-            this.navi.add(new Nave("Cacciatorpediniere", 2));
+            this.navi.add(new Nave((nomi[i]), lunghezze[i]));
+            this.naviDaPosizionare.add(new Nave((nomi[i]), lunghezze[i]));
         }
     }
     
-    private void setSottomarini() throws Exception
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            this.navi.add(new Nave("Sottomarino", 3));
-        }
-    }
     
     
     public class Player implements Runnable
@@ -97,8 +91,14 @@ public class Game {
         
         @Override
         public void run() {
-            setNomeGiocatore();
-            setup();
+            try
+            {
+                setNomeGiocatore();
+                posizionaNave();
+                setup();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
         }
         
         /**
@@ -132,15 +132,21 @@ public class Game {
         public void posizionaNave()
         {
             this.output.println("Posiziona le navi");
-            this.output.println("Posizionare navi in verticale?");
-            if (this.input.nextLine().equals("SI"))
+            int i = 0;
+            while (Game.this.naviDaPosizionare.isEmpty())
+            {
+                this.output.println("Posiziona " + Game.this.naviDaPosizionare.get(i).getNome());
+                this.output.println("Posizionare la nave in verticale?");
+            }
+            /*if (this.input.nextLine().equals("SI"))
             {
                 this.output.println("Digitare posizione verticale");
                 String response = this.input.nextLine();
                 int x = Integer.parseInt(response);
-            }
+                System.out.println(x);
+            }*/
         }
+        
+        
     }
-    
-    
 }
