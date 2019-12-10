@@ -12,16 +12,22 @@ package battaglianavale;
 public class Cella {
     private boolean libera;
     private Nave nave;
+    private int valore;
     
     public Cella()
     {
         libera = true;
+        valore = 0;
     }
     
+    public int getValore() {
+        return valore;
+    }
     public void assegnaNave(Nave nave)
     {
         this.nave = nave;
         libera = false;
+        valore = 1;
     }
 
     public boolean isLibera() {

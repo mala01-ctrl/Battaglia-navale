@@ -84,16 +84,27 @@ public class Game {
             griglia = new Cella[21][21];
             this.navi = new ArrayList<>();
             this.naviDaPosizionare = new ArrayList<>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++) {
+                this.naviDaPosizionare.add(new Nave("Cacciatorpediniere", 2));
+            }
+            for (int i = 0; i < 2; i++) {
+                this.naviDaPosizionare.add(new Nave("Sottomarino", 3));
+            }
+            naviDaPosizionare.add(new Nave("Corazzata", 4));
+            naviDaPosizionare.add(new Nave("Portaerei", 5));
+            for (int i = 0; i < 21; i++)
             {
-                this.navi.add(new Nave(Game.this.nomi[i], Game.this.lunghezze[i]));
-                this.naviDaPosizionare.add(this.navi.get(i));
+                for (int j = 0; j < 21; j++)
+                {
+                    griglia[i][j] = new Cella();
+                }
             }
         }
         
         @Override
         public void run() {
             setNomeGiocatore();
+            stampaMatrice();
             posizionaNave();
             setup();
         }
@@ -128,25 +139,74 @@ public class Game {
         
         public void posizionaNave() {
             this.output.println("Posiziona le navi");
-            this.output.println("Posizionare la nave in verticale?");
-            /*int i = 0;
-            while (Game.this.naviDaPosizionare.isEmpty())
-            {
-                this.output.println("Posiziona " + Game.this.naviDaPosizionare.get(i).getNome());
-                this.output.println("Posizionare la nave in verticale?");
-            }*/
-            if (this.input.nextLine().equals("SI")) {
+            while (!naviDaPosizionare.isEmpty()) {
+                output.println("Nave da Posizionare: " + naviDaPosizionare.get(0).getNome());
                 this.output.println("Posizionare navi in verticale?S/N");
+                String risposta = this.input.nextLine();
+                if (risposta.equals("S")) {
+                    this.output.println("Digitare lettera delle colonne");
+                    risposta = this.input.nextLine();
+                    int y = convertiLetteraNumero(risposta.charAt(0));
+                    System.out.println("Y: " + y);
+                    this.output.println("Digitare numero delle righe");
+                    risposta = input.nextLine();
+                    int x = Integer.parseInt(risposta) - 1;
+                    System.out.println("X: " + x);
+                    PosizionaNaveValoreVerticale(x, y, naviDaPosizionare.get(0));
+                    naviDaPosizionare.remove(0);
+                }
             }
-            String risposta = this.input.nextLine();
-            if (risposta.equals("S")) {
-                this.output.println("Digitare numero righe");
-                String response = this.input.nextLine();
-                int x = Integer.parseInt(response);
-                System.out.println(x);
-            }
+        } 
+        
+        private int convertiLetteraNumero(char lettera) {
+            return lettera - 65;
         }
         
+        private boolean PosizionaNaveValoreVerticale(int x, int y, Nave nave) {
+            //Controllo verticale
+            if (!controlloVerticalePosVerticale(x, y, nave.getLunghezza()))
+                return false;
+            //Controllo orizzontale 
+            if (!controlloVerticalePosOrizzontale(x, y, nave.getLunghezza()))
+                return false;
+            for (int i = 0; i < nave.getLunghezza(); i++) {
+                griglia[x + i][y].assegnaNave(nave);
+            }
+            return true;
+        }
         
+        private boolean controlloVerticalePosOrizzontale(int x, int y, int valore) {
+            for (int i = 0; i < valore; i++) {
+                if (!griglia[x + i][y + 1].isLibera())
+                    return false;
+                if (!griglia[x + i][y - 1].isLibera()) 
+                    return false;
+            }
+            return true;
+        }
+        
+        private boolean controlloVerticalePosVerticale(int x, int y, int valore) {
+            for (int i = 0; i < valore; i++) {
+                if (!griglia[x + i][y].isLibera()) 
+                    return false;
+            }
+            if (x > 0) {
+                if (!griglia[x - 1][y].isLibera()) 
+                    return false;
+            }
+            return true;
+        }
+        
+        private void stampaMatrice()
+        {
+            for (int i = 0; i < 21; i++)
+            {
+                for (int j = 0; j < 21; j++)
+                {
+                    output.println(griglia[i][j].isLibera());
+                }
+                output.println();
+            }
+        }
     }
 }
