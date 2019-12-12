@@ -133,6 +133,18 @@ public class Game {
             }
         }
         
+        private char getColonna() {
+            this.output.println("Colonna");
+            String risposta = this.input.nextLine();
+            return risposta.charAt(0);
+        }
+        
+        private int getRiga() {
+            this.output.println("Righe");
+            String risposta = input.nextLine();
+            return Integer.parseInt(risposta) - 1;
+        }
+        
         private void posizionaNave() {
             this.output.println("Posiziona le navi");
             int x;
@@ -142,14 +154,8 @@ public class Game {
                 this.output.println("Orientamento");
                 String risposta = this.input.nextLine();
                 if (risposta.equals("S")) {
-                    this.output.println("Colonna");
-                    risposta = this.input.nextLine();
-                    y = convertiLetteraNumero(risposta.charAt(0));
-                    System.out.println("Y: " + y);
-                    this.output.println("Righe");
-                    risposta = input.nextLine();
-                    x = Integer.parseInt(risposta) - 1;
-                    System.out.println("X: " + x);
+                    y = convertiLetteraNumero(getColonna());
+                    x = getRiga();
                     if (PosizionaNaveValoreVerticale(x, y, naviDaPosizionare.get(0))) {
                         output.println("Posizionato");
                         naviDaPosizionare.remove(0);
@@ -159,14 +165,8 @@ public class Game {
                     stampaMatrice();
                 }
                 else {
-                    this.output.println("Digitare lettera delle colonne");
-                    risposta = this.input.nextLine();
-                    y = convertiLetteraNumero(risposta.charAt(0));
-                    System.out.println("Y: " + y);
-                    this.output.println("Digitare numero delle righe");
-                    risposta = input.nextLine();
-                    x = Integer.parseInt(risposta) - 1;
-                    System.out.println("X: " + x);
+                    y = convertiLetteraNumero(getColonna());
+                    x = getRiga();
                     if (posizionaNaveOrizzontale(x, y, naviDaPosizionare.get(0)))
                     {
                         output.println("Posizionato");
@@ -267,5 +267,15 @@ public class Game {
             }
             return true;
         }
+        
+        private void processCommand()
+        {
+            output.println("Attacco");
+            int x = getRiga();
+            int y = convertiLetteraNumero(getColonna());
+            griglia[x][y].getNave().naveColpita();
+        }
+        
+        
     }
 }
