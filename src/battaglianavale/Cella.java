@@ -38,5 +38,11 @@ public class Cella {
         return nave;
     }
     
+    public void colpita()
+    {
+        valore--;
+        this.nave.naveColpita();
+    }
+    
    
 }

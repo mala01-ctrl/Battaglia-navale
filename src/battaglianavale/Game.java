@@ -32,6 +32,15 @@ public class Game {
     public Game() throws Exception {
     }
     
+    public synchronized boolean checkPlayer(Player player)
+    {
+        if (player != currentPlayer)
+            return false;
+        if (player.opponent == null)
+            return false;
+        return true;
+    }
+    
     public class Player implements Runnable
     {
         /**
@@ -80,14 +89,14 @@ public class Game {
             griglia = new Cella[21][21];
             this.navi = new ArrayList<>();
             this.naviDaPosizionare = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
+            /*for (int i = 0; i < 3; i++) {
                 this.naviDaPosizionare.add(new Nave("Cacciatorpediniere", 2));
             }
             for (int i = 0; i < 2; i++) {
                 this.naviDaPosizionare.add(new Nave("Sottomarino", 3));
-            }
-            naviDaPosizionare.add(new Nave("Corazzata", 4));
-            naviDaPosizionare.add(new Nave("Portaerei", 5));
+            }*/
+            naviDaPosizionare.add(new Nave("Corazzata", 1));
+            naviDaPosizionare.add(new Nave("Portaerei", 1));
             for (int i = 0; i < 21; i++)
             {
                 for (int j = 0; j < 21; j++)
@@ -103,6 +112,7 @@ public class Game {
             stampaMatrice();
             posizionaNave();
             setup();
+            processCommand();
         }
         
         /**
@@ -190,6 +200,7 @@ public class Game {
                 return false;
             for (int i = 0; i < nave.getLunghezza(); i++) {
                 griglia[x + i][y].assegnaNave(nave);
+                navi.add(nave);
             }
             return true;
         }
@@ -264,18 +275,34 @@ public class Game {
             for (int i = 0; i < nave.getValore(); i++)
             {
 		griglia[x][y + i].assegnaNave(nave);
+                navi.add(nave);
             }
             return true;
         }
         
-        private void processCommand()
-        {
-            output.println("Attacco");
-            int x = getRiga();
-            int y = convertiLetteraNumero(getColonna());
-            griglia[x][y].getNave().naveColpita();
+        private void processCommand() {
+            while (true) {
+                if (checkPlayer(this)) {
+                    output.println("Attacco");
+                    int x = getRiga();
+                    int y = convertiLetteraNumero(getColonna());
+                    if (opponent.griglia[x][y].getValore() == 1) {
+                        opponent.griglia[x][y].colpita();
+                        output.println("Colpita");
+                        if (opponent.griglia[x][y].getNave().isAffondata()) {
+                            opponent.navi.remove(opponent.griglia[x][y].getNave());
+                        }
+                        if (opponent.navi.isEmpty()) {
+                            output.println("Vittoria");
+                            opponent.output.println("Hai perso");
+                            return;
+                        }
+                    } else {
+                        output.println("Acqua");
+                    }
+                    currentPlayer = currentPlayer.opponent;
+                }
+            }
         }
-        
-        
     }
 }
