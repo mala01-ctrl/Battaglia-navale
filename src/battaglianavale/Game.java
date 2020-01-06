@@ -95,8 +95,8 @@ public class Game {
             for (int i = 0; i < 2; i++) {
                 this.naviDaPosizionare.add(new Nave("Sottomarino", 3));
             }*/
-            naviDaPosizionare.add(new Nave("Corazzata", 1));
-            naviDaPosizionare.add(new Nave("Portaerei", 1));
+            naviDaPosizionare.add(new Nave("Corazzata", 4));
+            naviDaPosizionare.add(new Nave("Portaerei", 5));
             for (int i = 0; i < 21; i++)
             {
                 for (int j = 0; j < 21; j++)
@@ -281,7 +281,7 @@ public class Game {
         }
         
         private void processCommand() {
-            while (true) {
+            while (!navi.isEmpty()) {
                 if (checkPlayer(this)) {
                     output.println("Attacco");
                     int x = getRiga();
