@@ -89,12 +89,12 @@ public class Game {
             griglia = new Cella[21][21];
             this.navi = new ArrayList<>();
             this.naviDaPosizionare = new ArrayList<>();
-            /*for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 this.naviDaPosizionare.add(new Nave("Cacciatorpediniere", 2));
             }
             for (int i = 0; i < 2; i++) {
                 this.naviDaPosizionare.add(new Nave("Sottomarino", 3));
-            }*/
+            }
             naviDaPosizionare.add(new Nave("Corazzata", 4));
             naviDaPosizionare.add(new Nave("Portaerei", 5));
             for (int i = 0; i < 21; i++)
